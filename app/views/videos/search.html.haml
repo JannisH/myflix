@@ -1,7 +1,7 @@
 %section.genre
   %header.clearfix
     %h1 
-      = @category.name
+      = "Results for #{@search_term}:"
     .genre_sorting
       Sort by:
       %select(name="")
@@ -9,5 +9,6 @@
         %option(value="z-a") Title: Z - A
         %option(value="rating") Rating
   %article.video_category
-    - @category.videos.each do |video|
+    - @videos.each do |video|
       = render 'shared/video', video: video
+
