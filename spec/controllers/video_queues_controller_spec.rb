@@ -114,7 +114,7 @@ describe VideoQueuesController do
 			queue = VideoQueue.create(user_id: user.id)
 			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
 			delete :remove, video_id: video.id
-			expect(assigns(:videos).size).to eq(0)
+			expect(queue.videos.size).to eq(0)
 		end
 
 		it 'displays a flash message and does not remove something when trying to delete a video not on the queue' do
@@ -124,7 +124,7 @@ describe VideoQueuesController do
 			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
 			delete :remove, video_id: video.id+1
 			expect(flash[:danger]).to eq("The video you tried to remove wasn't in your queue!")
-			expect(assigns(:videos).size).to eq(1)
+			expect(queue.videos.size).to eq(1)
 		end
 
 	end
@@ -139,5 +139,5 @@ describe VideoQueuesController do
 		end
 	end
 end
-
+end
 

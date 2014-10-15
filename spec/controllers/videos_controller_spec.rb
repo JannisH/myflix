@@ -94,7 +94,7 @@ describe VideosController do
    	    		video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "1"
-				assigns(:videos).should == nil
+				expect(assigns(:videos)).to  eq(nil)
 			end
 		end
 	end
