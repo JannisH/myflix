@@ -72,7 +72,7 @@ describe VideoQueuesController do
 			it 'does not add a video that is already part of the queue' do
 				video = Video.create(title: "movie1", description: "fun")
 				queue = VideoQueue.create(user_id: user.id)
-				Queueable.create(video_queue_id: queue.id, video_id: video.id,priority:1)
+				Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
 				request.env["HTTP_REFERER"] = video_path(video)
 				post :add, video_id: video.id
 				expect(flash[:danger]).to eq("The video you tried to add was already on your queue!")
@@ -90,6 +90,52 @@ describe VideoQueuesController do
 				expect(response).to redirect_to(root_path)
 			end
 
+		end
+	end
+
+	describe 'DELETE remove' do
+		let(:user) { Fabricate(:user) }
+		
+		context "with authentication" do
+			before do
+				session[:user_id] = user.id
+			end
+
+		it 'should redirect to the queue when a video is removed from it' do 
+			video = Video.create(title: "movie1", description: "fun")
+			queue = VideoQueue.create(user_id: user.id)
+			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
+			delete :remove, video_id: video.id
+			expect(response).to redirect_to(video_queue_path(user.video_queue))
+		end
+
+		it 'deletes the item out of the queue once it is removed from within' do
+			video = Video.create(title: "movie1", description: "fun")
+			queue = VideoQueue.create(user_id: user.id)
+			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
+			delete :remove, video_id: video.id
+			expect(assigns(:videos).size).to eq(0)
+		end
+
+		it 'displays a flash message and does not remove something when trying to delete a video not on the queue' do
+			video = Video.create(title: "movie1", description: "fun")
+			video2 = Video.create(title: "movie1", description: "fun")
+			queue = VideoQueue.create(user_id: user.id)
+			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
+			delete :remove, video_id: video.id+1
+			expect(flash[:danger]).to eq("The video you tried to remove wasn't in your queue!")
+			expect(assigns(:videos).size).to eq(1)
+		end
+
+	end
+	context 'without authentication' do
+
+		it 'should redirect to the front page for non signed users when trying to delete of a queue' do
+			video = Video.create(title: "movie1", description: "fun")
+			queue = VideoQueue.create(user_id: user.id)
+			Queueable.create(video_queue_id: queue.id, video_id: video.id, priority:1)
+			delete :remove, video_id: video.id
+			expect(response).to redirect_to(root_path)
 		end
 	end
 end

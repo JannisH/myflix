@@ -16,4 +16,23 @@ class VideoQueuesController < ApplicationController
   	@videos = current_user.video_queue.videos.sort_by {|x| x.get_priority_by_user(current_user)}
   end
 
+  def remove
+  	queue = current_user.video_queue
+  	size = queue.videos.size
+  	item = queue.queueables.find_by(video_id: params[:video_id])
+  	if item
+  		delete_priority = queue.queueables.find_by(video_id: params[:video_id]).priority
+  		queue.videos.delete(params[:video_id])
+  		queue.queueables.each do |item|
+  			if item.priority > delete_priority
+  				item.priority -= 1
+  				item.save
+  			end
+  		end
+  	else
+  		flash[:danger] = "The video you tried to remove wasn't in your queue!"
+  	end
+  	redirect_to video_queue_path(current_user.video_queue)
+  end 
+
 end
