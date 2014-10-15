@@ -8,6 +8,14 @@ describe VideosController do
 			before do
 				session[:user_id] = user.id
 			end
+			it "should be able to retrieve the reviews through the @video variable" do
+				video = Video.create(title: "movie1", description: "fun")
+				review = Review.create(text: "fun", user_id: user.id, video_id: video.id, rating: 5)
+
+				get :show, id: video.id
+				assigns(:video).reviews.should == [review]
+			end
+
 
 			it "gets the correct video in the @video variable" do
 				video = Video.create(title: "movie1", description: "fun")
@@ -62,14 +70,14 @@ describe VideosController do
 			end
 
 			it "should work for one video" do
-   	   video = Video.create(title: "movie1", description: "fun")
+   	   			video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "1"
 				assigns(:videos).should == [video]
 			end
 
 			it "should work for multiple videos" do
-   	   video = Video.create(title: "movie1", description: "fun")
+   	   			video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "movie"
 				assigns(:videos).should == [video, video2]
@@ -83,7 +91,7 @@ describe VideosController do
 			end
 
 			it "shouldn't assign videos" do
-   	    video = Video.create(title: "movie1", description: "fun")
+   	    		video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "1"
 				assigns(:videos).should == nil
