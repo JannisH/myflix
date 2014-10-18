@@ -1,5 +1,5 @@
 class ReviewsController < ApplicationController
-	before_action :require_login
+	before_action :require_login, only: :create
 	
 	def new
 	  @review = Review.new
@@ -20,6 +20,10 @@ class ReviewsController < ApplicationController
 	      redirect_to :back
 	    end
 	  end
+	end
+
+	def update
+	  
 	end
 
 

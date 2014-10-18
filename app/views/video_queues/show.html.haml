@@ -4,33 +4,34 @@
       %article
         %header
           %h2 My Queue
-        %table.table
-          %thead
-            %tr
-              %th(width="10%") List Order
-              %th(width="30%") Video Title
-              %th(width="10%") Play
-              %th(width="20%") Rating
-              %th(width="15%") Genre
-              %th(width="15%") Remove
-          %tbody
-            - @videos.each do |video|
+        = form_tag video_queue_update_path(current_user.video_queue), method: :put do
+          %table.table
+            %thead
               %tr
-                %td
-                  %input.form-control(type="text" value="#{current_user.get_priority(video)}")
-                %td
-                  = link_to video.title,video_path(video)
-                %td
-                  = button_to "Play", nil, class: "btn btn-default"
-                %td
-                  = current_user.get_rating(video)
-
-                %td
-                  = link_to video.category.name,category_path(video.category)
-                %td
-                  = link_to video_remove_path(video), method: :delete do
-                    %i.glyphicon.glyphicon-remove
-        = button_to "Update Instant Queue", nil, class: "btn btn-default"
+                %th(width="10%") List Order
+                %th(width="30%") Video Title
+                %th(width="10%") Play
+                %th(width="20%") Rating
+                %th(width="15%") Genre
+                %th(width="15%") Remove
+            %tbody
+              - @queueables.each do |queueable|
+                %tr
+                  = hidden_field_tag "queue_items[][id]", queueable.id
+                  %td
+                    = text_field_tag "queue_items[][position]", queueable.priority
+                  %td
+                    = link_to queueable.video.title,video_path(queueable.video)
+                  %td
+                    = button_to "Play", nil, class: "btn btn-default"
+                  %td
+                    = select_tag "queue_items[][rating]", options_for_select([['1 Star',1],['2 Stars',2],['3 Stars',3],['4 Stars',4],['5 Stars',5]], get_rating_for_user(queueable)), include_blank: true
+                  %td
+                    = link_to queueable.video.category.name,category_path(queueable.video.category)
+                  %td
+                    = link_to video_remove_path(queueable.video), method: :delete do
+                      %i.glyphicon.glyphicon-remove
+          = submit_tag "Update Instant Queue", method: :put, class: "btn btn-default"
 
 
 

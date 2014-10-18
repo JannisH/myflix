@@ -13,7 +13,7 @@ describe VideosController do
 				review = Review.create(text: "fun", user_id: user.id, video_id: video.id, rating: 5)
 
 				get :show, id: video.id
-				assigns(:video).reviews.should == [review]
+				expect(assigns(:video).reviews).to eq([review])
 			end
 
 
@@ -22,14 +22,13 @@ describe VideosController do
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 
 				get :show, id: video.id
-				assigns(:video).should == video
+				expect(assigns(:video)).to eq(video)
 			end
 
 			it "should render the show template" do
 				video = Video.create(title: "movie1", description: "fun")
-
 				get :show, id: video.id
-				response.should render_template :show
+				expect(response).to render_template(:show)
 			end
 		end
 		
@@ -39,14 +38,14 @@ describe VideosController do
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 
 				get :show, id: video.id
-				assigns(:video).should == nil
+				expect(assigns(:video)).to eq(nil)
 			end
 
 			it "shouldn't render the show template" do
 				video = Video.create(title: "movie1", description: "fun")
 
 				get :show, id: video.id
-				response.should redirect_to :root
+				expect(response).to redirect_to(:root)
 			end
 		end
 	end
@@ -60,34 +59,34 @@ describe VideosController do
 			it "should assign no values if no videos are available" do
 
 				get :search, search_term: "test"
-				assigns(:videos).size.should == 0
+				expect(assigns(:videos).size).to eq(0)
 			end
 
 			it "should render the search template" do
 
 				get :search, search_term: "test"
-				response.should render_template :search
+				expect(response).to render_template(:search)
 			end
 
 			it "should work for one video" do
    	   			video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "1"
-				assigns(:videos).should == [video]
+				expect(assigns(:videos)).to eq([video])
 			end
 
 			it "should work for multiple videos" do
    	   			video = Video.create(title: "movie1", description: "fun")
 				video2 = Video.create(title: "awesome movie", description: "awesome")
 				get :search, search_term: "movie"
-				assigns(:videos).should == [video, video2]
+				expect(assigns(:videos)).to eq([video, video2])
 			end
 		end
 		context "without authentication" do
 			it "shouldn't render the search template" do
 
 				get :search, search_term: "test"
-				response.should redirect_to :root
+				expect(response).to redirect_to(:root)
 			end
 
 			it "shouldn't assign videos" do

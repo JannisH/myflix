@@ -17,6 +17,16 @@ class ApplicationController < ActionController::Base
       redirect_to root_path
     end
   end
-  
-  
+
+  def change_ratings(changes)
+  changes.each do |item|
+      review = Review.find_by(video_id: item["id"], user_id: current_user.id)
+      if(review && !(review.rating == item["rating"]))
+        review.rating = item["rating"]
+        review.save
+      elsif review == nil
+        Review.create(user_id: current_user.id, rating: item["rating"])
+      end
+    end
+  end
 end

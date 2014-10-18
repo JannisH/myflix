@@ -13,7 +13,7 @@ class VideoQueuesController < ApplicationController
   end
 
   def show
-  	@videos = current_user.video_queue.videos.sort_by {|x| x.get_priority_by_user(current_user)}
+  	@queueables = current_user.video_queue.queueables.sort_by {|x| x.priority}
   end
 
   def remove
@@ -33,6 +33,31 @@ class VideoQueuesController < ApplicationController
   		flash[:danger] = "The video you tried to remove wasn't in your queue!"
   	end
   	redirect_to video_queue_path(current_user.video_queue)
-  end 
+  end
+
+  def update
+  	queue = current_user.video_queue
+  	queue_changes = params[:queue_items]
+  	if invalid_input?(queue_changes)
+  		flash[:danger] = "You assigned at least two videos with the same priority or used illegal signs!"
+  	else
+  		queue.update_queue(queue_changes)
+      queue.normalize_priorities
+  	end
+  	redirect_to video_queue_path(current_user.video_queue)
+  end
+
+private
+ def invalid_input?(priority_entries)
+ 	item2 = nil
+ 	priority_entries.each do |item|
+  		item1 = item["position"]
+  		if(item1 == item2) || (item1.to_i == 0) || (item1.to_f > item1.to_i)
+   		  return true
+  		end
+  		item2 = item1
+  	end
+  	false
+ end
 
 end

@@ -62,16 +62,16 @@ end
 	  	get :destroy
 		end
 
-		it 'should set the user_id in the session to nil again' do
+	  it 'should set the user_id in the session to nil again' do
 	  	session[:user_id].should == nil
 	  end
 
 	  it 'should redirect to the front page' do
-	  	response.should redirect_to root_path
+	  	expect(response).to redirect_to root_path
 	  end
 
 	  it 'should flash the verification message' do
-	  	flash[:info].should_not == nil
+	  	expect(flash[:info]).to eq("You have successfully logged out!")
 	  end
 	end
 end

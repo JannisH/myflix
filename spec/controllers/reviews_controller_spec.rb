@@ -27,7 +27,7 @@ describe ReviewsController do
 		  it 'should be redirected to the reviewed video after posting a review' do
 		  	video = Video.create(title: "movie1", description: "fun")
 		  	post :create, {video_id: video.id, user_id: user.id, review: {rating: 5, text: "awesome"}}
-		  	response.should redirect_to video
+		  	expect(response).to redirect_to(video)
 		  end
 
 		end
