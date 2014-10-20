@@ -10,60 +10,55 @@ describe SessionsController do
 	end
 	
 	describe 'POST create' do
-		context 'with authentication' do
-
+		let(:user) { Fabricate(:user) }
+	
+	context 'with authentication' do
 	  it 'should create a session when the user signs in correctly' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "testtest", email: "test@test.com"}
-	  	session[:user_id].should == user.id
+	  	post :create,  {password: user.password, email: user.email}
+	  	expect(session[:user_id]).to eq(user.id)
 	  end
 
 	  it 'should redirect to the video index page' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "testtest", email: "test@test.com"}
-	  	response.should redirect_to videos_path
+	  	post :create,  {password: user.password, email: user.email}
+	  	expect(response).to redirect_to(videos_path)
 	  end
 
 	  it 'should flash the info message' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "testtest", email: "test@test.com"}
-	  	flash[:info].should_not == nil
+	  	post :create,  {password: user.password, email: user.email}
+	  	expect(flash[:info]).to_not eq(nil)
 	  end
 
 	end
 
 	context 'without authentication ' do
 
-		it 'should create a session when the user signs in correctly' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "testt", email: "test@test.com"}
-	  	session[:user_id].should == nil
+		it 'should not create a session when the user signs in correctly' do
+	  	post :create,  {password: user.password+"s", email: user.email}
+	  	expect(session[:user_id]).to eq(nil)
 	  end
 
 	  it 'should redirect to the video index page' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "test", email: "test@test.com"}
-	  	response.should render_template :new
+	  	post :create,  {password: user.password+"s", email: user.email}
+	  	expect(response).to render_template :new
 	  end
 
 	  it 'should flash the info message' do
-	  	user = Fabricate(:user)
-	  	post :create,  {password: "test", email: "test@test.com"}
-	  	flash[:danger].should_not == nil
+	  	post :create,  {password: user.password+"s", email: user.email}
+	  	expect(flash[:danger]).to_not eq(nil)
 	  end
 	end
 end
 
 	describe 'GET destroy' do
-
+		let(:user) { Fabricate(:user) }
+		
 		before do
-			user = Fabricate(:user)
-	  	post :create,  {password: "testtest", email: "test@test.com"}
-	  	get :destroy
+	  		post :create,  {password: user.password, email: user.email}
+	  		get :destroy
 		end
 
 	  it 'should set the user_id in the session to nil again' do
-	  	session[:user_id].should == nil
+	  	expect(session[:user_id]).to eq(nil)
 	  end
 
 	  it 'should redirect to the front page' do

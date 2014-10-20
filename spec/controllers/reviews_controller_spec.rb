@@ -37,9 +37,7 @@ describe ReviewsController do
 		  	video = Video.create(title: "movie1", description: "fun")
 		  	post :create, {video_id: video.id, user_id: user.id, review: {rating: 5, text: "awesome"}}
 		  	expect(video.reviews.size).to eq(0)
-		  end
-
-		  
+		  end  
 
 		end
 

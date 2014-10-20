@@ -11,7 +11,8 @@
         %p 
           =@video.description
         .actions
-          = link_to "+ My Queue", video_add_path(@video), method: :post, class: "btn btn-success"
+          - if !current_user.video_queue.videos.include?(@video)
+            = link_to "+ My Queue", video_add_path(@video), method: :post, class: "btn btn-success"
 
 
 %section.reviews.container

@@ -5,7 +5,6 @@ describe Queueable do
 
 	describe "#rating" do
 		let(:user) { Fabricate(:user) }
-
 		it "returns the rating from the review if present" do
 			populate_queue
 			expect(Queueable.first.rating).to eq(5)
