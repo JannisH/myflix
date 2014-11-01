@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe UsersController do 
+
+
+
 	describe 'GET new' do
 	  it 'should render the new template' do
 	  	get :new
@@ -35,6 +38,17 @@ describe UsersController do
 	  it 'should redirect to the videos index when signed up correctly' do
 	  	post :create, user: {full_name: "peter", password: "123456", email: "peter@peter.com"}
 		response.should redirect_to videos_path
+	  end
+	end
+
+	describe 'GET show' do
+	  let(:user) { Fabricate(:user) }
+
+
+	  it 'sets the @user variable' do
+	  	session[:id]=user.id
+	  	get :show, id: 1
+	  	expect(assigns(:user)).to eq(user)
 	  end
 	end
 end

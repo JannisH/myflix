@@ -3,10 +3,14 @@ Myflix::Application.routes.draw do
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
   get 'logout', to: 'sessions#destroy'
+  get 'follow', to: 'relationships#follow'
   resources :video_queues, only: [:show] do
     put 'update', to: 'video_queues#update'
   end
-  resources :users
+  resources :users do
+    delete 'unfollow', to: 'relationships#destroy'
+  end
+  resources :relationships, only: [:index, :create]
   resources :categories
   get 'ui(/:action)', controller: 'ui'
 

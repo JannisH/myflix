@@ -19,7 +19,7 @@
                 %tr
                   = hidden_field_tag "queue_items[][id]", queueable.id
                   %td
-                    = text_field_tag "queue_items[][position]", queueable.priority
+                    = text_field_tag "queue_items[][position]", queueable.priority, id: "video_#{queueable.id}"
                   %td
                     = link_to queueable.video.title,video_path(queueable.video)
                   %td

@@ -3,6 +3,9 @@ class Queueable < ActiveRecord::Base
 	belongs_to :video
 	validates_uniqueness_of :video_queue_id, scope: :video_id
 
+	validates_numericality_of :priority, {only_integer: true}
+
+
 	def rating
 		review.rating if review
 	end

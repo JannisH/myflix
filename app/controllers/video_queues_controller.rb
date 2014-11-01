@@ -49,13 +49,12 @@ class VideoQueuesController < ApplicationController
 
 private
  def invalid_input?(priority_entries)
- 	item2 = nil
- 	priority_entries.each do |item|
-  		item1 = item["position"]
-  		if(item1 == item2) || (item1.to_i == 0) || (item1.to_f > item1.to_i)
+  new_order = priority_entries.map {|entry| entry['position']}
+ 	new_order.each do |num|
+      position = new_order.delete_at(0)
+  		if new_order.include?(position) || (position.to_i == 0) || (position.to_f > position.to_i)
    		  return true
   		end
-  		item2 = item1
   	end
   	false
  end
